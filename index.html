@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Localização e Google Maps</title>
+    <script>
+        let currentLatitude;
+        let currentLongitude;
+
+        // Função para obter a localização atual do usuário
+        function getCurrentLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        currentLatitude = position.coords.latitude;
+                        currentLongitude = position.coords.longitude;
+                        document.getElementById('currentLocation').innerText = `Sua localização: ${currentLatitude.toFixed(6)}, ${currentLongitude.toFixed(6)}`;
+                    },
+                    (error) => {
+                        alert('Erro ao obter localização: ' + error.message);
+                    }
+                );
+            } else {
+                alert('Geolocalização não é suportada pelo seu navegador.');
+            }
+        }
+
+        // Função para abrir o Google Maps
+        function openGoogleMaps() {
+            const selectedLocation = document.getElementById('locations').value;
+            const [latitude, longitude] = selectedLocation.split(',');
+
+            if (!currentLatitude || !currentLongitude) {
+                alert('Por favor, obtenha sua localização primeiro.');
+                return;
+            }
+
+            const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${currentLatitude},${currentLongitude}&destination=${latitude},${longitude}`;
+            window.open(googleMapsUrl, '_blank');
+        }
+    </script>
+</head>
+<body onload="getCurrentLocation()">
+    <h1>Localização e Google Maps</h1>
+    <p id="currentLocation">Obtendo sua localização...</p>
+
+    <label for="locations">Escolha um destino:</label>
+    <select id="locations">
+        <option value="-25.44891,-49.25096">Araça006, Bloco Vermelho</option>
+        <option value="-25.45040,-49.25151">Sala 18, Bloco Azul</option>
+        <option value="-25.45084,-49.25073">SLVD02, Bloco Verde</option>
+        <option value="-25.45042,-49.25240">SLA11, Bloco Amarelo</option>
+    </select>
+
+    <button onclick="openGoogleMaps()">Abrir no Google Maps</button>
+</body>
+</html>
